@@ -3,7 +3,15 @@ import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStore } from '../store';
 import { theme } from '../theme';
-import { Button, Card, Field, SectionTitle } from '../components/ui';
+import {
+  BOTTOM_BAR_SPACE,
+  Button,
+  Card,
+  Field,
+  SCREEN_PADDING,
+  ScreenHeader,
+  SectionTitle,
+} from '../components/ui';
 import { GYM_LEVELS } from '../types';
 import { currentLevel, totalSessions } from '../stats';
 
@@ -51,17 +59,17 @@ export function SettingsScreen() {
   return (
     <ScrollView
       style={styles.screen}
+      contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={{
         paddingTop: insets.top + theme.spacing(4),
-        paddingBottom: theme.spacing(28),
-        paddingHorizontal: theme.spacing(4),
+        paddingBottom: BOTTOM_BAR_SPACE,
+        paddingHorizontal: SCREEN_PADDING,
       }}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.h1}>Settings</Text>
-      <Text style={styles.sub}>Your setup and gym levels.</Text>
+      <ScreenHeader title="Settings" subtitle="Tune your goals and see how your level is tracking." />
 
-      <Card style={{ marginTop: theme.spacing(4) }}>
+      <Card>
         <SectionTitle>Your Setup</SectionTitle>
         <Field label="Your Name" value={name} onChangeText={setName} placeholder="Athlete" />
         <Field
@@ -81,7 +89,7 @@ export function SettingsScreen() {
         <Button title="Save Setup" onPress={save} />
       </Card>
 
-      <Card style={{ marginTop: theme.spacing(4) }}>
+      <Card style={styles.stackCard}>
         <SectionTitle>Gym Levels</SectionTitle>
         {GYM_LEVELS.map((l) => {
           const active = l.name === level.name;
@@ -108,7 +116,7 @@ export function SettingsScreen() {
         </Text>
       </Card>
 
-      <Card style={{ marginTop: theme.spacing(4) }}>
+      <Card style={styles.stackCard}>
         <SectionTitle>Data</SectionTitle>
         <Text style={styles.dangerText}>
           Reset clears all of your logged sessions, personal bests and settings.
@@ -125,8 +133,7 @@ export function SettingsScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: theme.colors.bg },
-  h1: { color: theme.colors.text, fontSize: theme.font.h1, fontWeight: '800' },
-  sub: { color: theme.colors.textMuted, fontSize: theme.font.small, marginTop: theme.spacing(1) },
+  stackCard: { marginTop: theme.spacing(3) },
   levelRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -147,7 +154,11 @@ const styles = StyleSheet.create({
   },
   spacerDot: { width: 8, height: 8, marginRight: theme.spacing(2.5) },
   levelName: { color: theme.colors.text, fontSize: theme.font.body, fontWeight: '700' },
-  levelRange: { color: theme.colors.textMuted, fontSize: theme.font.small },
+  levelRange: {
+    color: theme.colors.textMuted,
+    fontSize: theme.font.small,
+    fontVariant: ['tabular-nums'],
+  },
   levelFoot: {
     color: theme.colors.textMuted,
     fontSize: theme.font.small,

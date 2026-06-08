@@ -55,6 +55,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.colors.border,
     backgroundColor: theme.colors.surfaceAlt,
+    minHeight: 42,
+    justifyContent: 'center',
   },
   chipText: {
     color: theme.colors.textMuted,

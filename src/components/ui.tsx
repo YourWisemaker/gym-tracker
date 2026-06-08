@@ -11,6 +11,9 @@ import {
 } from 'react-native';
 import { theme } from '../theme';
 
+export const SCREEN_PADDING = theme.spacing(4);
+export const BOTTOM_BAR_SPACE = theme.spacing(28);
+
 export function Card({
   children,
   style,
@@ -29,6 +32,26 @@ export function Label({ children }: { children: React.ReactNode }) {
   return <Text style={styles.label}>{children}</Text>;
 }
 
+export function ScreenHeader({
+  title,
+  subtitle,
+  aside,
+}: {
+  title: string;
+  subtitle?: string;
+  aside?: React.ReactNode;
+}) {
+  return (
+    <View style={styles.screenHeader}>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.screenTitle}>{title}</Text>
+        {subtitle ? <Text style={styles.screenSubtitle}>{subtitle}</Text> : null}
+      </View>
+      {aside ? <View>{aside}</View> : null}
+    </View>
+  );
+}
+
 export function Field({
   label,
   style,
@@ -42,6 +65,30 @@ export function Field({
         style={[styles.input, style]}
         {...rest}
       />
+    </View>
+  );
+}
+
+export function FloatingActionButton({
+  label,
+  onPress,
+  bottom,
+}: {
+  label: string;
+  onPress: () => void;
+  bottom: number;
+}) {
+  return (
+    <View style={[styles.fabWrap, { bottom }]}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        onPress={onPress}
+        hitSlop={10}
+        style={({ pressed }) => [styles.fab, pressed && { transform: [{ scale: 0.96 }] }]}
+      >
+        <Text style={styles.fabText}>+</Text>
+      </Pressable>
     </View>
   );
 }
@@ -63,6 +110,7 @@ export function Button({
     <Pressable
       onPress={onPress}
       disabled={disabled}
+      accessibilityRole="button"
       style={({ pressed }) => [
         styles.btn,
         variant === 'primary' && styles.btnPrimary,
@@ -144,6 +192,26 @@ const styles = StyleSheet.create({
     padding: theme.spacing(4),
     borderWidth: 1,
     borderColor: theme.colors.border,
+    borderCurve: 'continuous',
+    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.22)',
+  },
+  screenHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: theme.spacing(3),
+    marginBottom: theme.spacing(4),
+  },
+  screenTitle: {
+    color: theme.colors.text,
+    fontSize: theme.font.h1,
+    fontWeight: '900',
+    lineHeight: 34,
+  },
+  screenSubtitle: {
+    color: theme.colors.textMuted,
+    fontSize: theme.font.small,
+    lineHeight: 19,
+    marginTop: theme.spacing(1),
   },
   sectionTitle: {
     color: theme.colors.textMuted,
@@ -168,6 +236,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing(3),
     color: theme.colors.text,
     fontSize: theme.font.body,
+    minHeight: 48,
   },
   btn: {
     borderRadius: theme.radius.sm,
@@ -175,6 +244,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing(4),
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: 48,
+    borderCurve: 'continuous',
   },
   btnPrimary: { backgroundColor: theme.colors.primary },
   btnGhost: {
@@ -184,6 +255,23 @@ const styles = StyleSheet.create({
   },
   btnDanger: { backgroundColor: theme.colors.danger },
   btnText: { fontSize: theme.font.body, fontWeight: '700' },
+  fabWrap: { position: 'absolute', right: SCREEN_PADDING },
+  fab: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    backgroundColor: theme.colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 14px 26px rgba(184, 242, 75, 0.28)',
+  },
+  fabText: {
+    color: '#17220A',
+    fontSize: 34,
+    fontWeight: '700',
+    lineHeight: 38,
+    marginTop: -2,
+  },
   tag: {
     flexDirection: 'row',
     alignItems: 'center',

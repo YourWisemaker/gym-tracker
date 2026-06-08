@@ -3,7 +3,14 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStore } from '../store';
 import { theme } from '../theme';
-import { Card, ProgressBar, SectionTitle } from '../components/ui';
+import {
+  BOTTOM_BAR_SPACE,
+  Card,
+  ProgressBar,
+  SCREEN_PADDING,
+  ScreenHeader,
+  SectionTitle,
+} from '../components/ui';
 import {
   currentLevel,
   pbImprovement,
@@ -64,33 +71,43 @@ export function DashboardScreen() {
   return (
     <ScrollView
       style={styles.screen}
+      contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={{
         paddingTop: insets.top + theme.spacing(4),
-        paddingBottom: theme.spacing(28),
-        paddingHorizontal: theme.spacing(4),
+        paddingBottom: BOTTOM_BAR_SPACE,
+        paddingHorizontal: SCREEN_PADDING,
       }}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.greeting}>Hey {settings.name || 'Athlete'} 👋</Text>
-      <View style={styles.levelRow}>
-        <View style={styles.levelBadge}>
-          <Text style={styles.levelBadgeText}>{stats.level.name.toUpperCase()}</Text>
+      <ScreenHeader
+        title={`Hey ${settings.name || 'Athlete'}`}
+        subtitle="Track the work, keep the streak, chase the next level."
+      />
+
+      <Card style={styles.heroCard}>
+        <View style={styles.heroTop}>
+          <View style={styles.levelBadge}>
+            <Text style={styles.levelBadgeText}>{stats.level.name.toUpperCase()}</Text>
+          </View>
+          <Text style={styles.heroCaption}>Current level</Text>
         </View>
+        <Text style={styles.heroValue}>{stats.total}</Text>
+        <Text style={styles.heroLabel}>completed sessions</Text>
         <Text style={styles.levelSub}>
           {stats.toNext === null
             ? 'Top tier reached'
             : `${stats.toNext} sessions to next level`}
         </Text>
-      </View>
+      </Card>
 
       <View style={styles.tileGrid}>
-        <StatTile value={`${stats.total}`} label="TOTAL SESSIONS" accent={theme.colors.primary} />
         <StatTile value={`${stats.month}`} label="THIS MONTH" accent={theme.colors.accent} />
+        <StatTile value={`${stats.week}`} label="THIS WEEK" accent={theme.colors.primary} />
         <StatTile value={`${stats.streak}`} label="DAY STREAK" accent={theme.colors.warn} />
         <StatTile value={stats.avg.toFixed(1)} label="WEEKLY AVG" accent={theme.colors.groupColors.Arms} />
       </View>
 
-      <Card style={{ marginTop: theme.spacing(4) }}>
+      <Card style={styles.stackCard}>
         <SectionTitle>Weekly Goal</SectionTitle>
         <View style={styles.goalRow}>
           <Text style={styles.goalBig}>
@@ -106,12 +123,12 @@ export function DashboardScreen() {
         />
         <Text style={styles.goalHint}>
           {goalPct >= 1
-            ? 'Goal smashed for this week. 🔥'
+            ? 'Goal smashed for this week.'
             : `${Math.max(0, settings.weeklyGoal - stats.week)} more to hit your weekly goal.`}
         </Text>
       </Card>
 
-      <Card style={{ marginTop: theme.spacing(4) }}>
+      <Card style={styles.stackCard}>
         <SectionTitle>Sessions / Week</SectionTitle>
         <View style={styles.chart}>
           {stats.trend.map((t, i) => (
@@ -141,7 +158,7 @@ export function DashboardScreen() {
         </View>
       </Card>
 
-      <Card style={{ marginTop: theme.spacing(4) }}>
+      <Card style={styles.stackCard}>
         <SectionTitle>Sessions by Muscle Group</SectionTitle>
         {MUSCLE_GROUPS.map((g) => {
           const count = stats.byGroup[g] ?? 0;
@@ -163,7 +180,7 @@ export function DashboardScreen() {
         })}
       </Card>
 
-      <Card style={{ marginTop: theme.spacing(4) }}>
+      <Card style={styles.stackCard}>
         <SectionTitle>Top Personal Bests</SectionTitle>
         {stats.topPBs.length === 0 ? (
           <Text style={styles.goalHint}>Log some PBs in the PB tab to see them here.</Text>
@@ -198,16 +215,15 @@ export function DashboardScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: theme.colors.bg },
-  greeting: {
-    color: theme.colors.text,
-    fontSize: theme.font.h1,
-    fontWeight: '800',
+  heroCard: {
+    backgroundColor: theme.colors.elevated,
+    marginBottom: theme.spacing(3),
+    padding: theme.spacing(5),
   },
-  levelRow: {
+  heroTop: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(4),
+    justifyContent: 'space-between',
     gap: theme.spacing(3),
   },
   levelBadge: {
@@ -224,7 +240,32 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 1,
   },
-  levelSub: { color: theme.colors.textMuted, fontSize: theme.font.small, flexShrink: 1 },
+  heroCaption: {
+    color: theme.colors.textFaint,
+    fontSize: theme.font.tiny,
+    fontWeight: '800',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+  },
+  heroValue: {
+    color: theme.colors.text,
+    fontSize: 52,
+    fontWeight: '900',
+    lineHeight: 58,
+    marginTop: theme.spacing(4),
+    fontVariant: ['tabular-nums'],
+  },
+  heroLabel: {
+    color: theme.colors.textMuted,
+    fontSize: theme.font.body,
+    fontWeight: '700',
+  },
+  levelSub: {
+    color: theme.colors.textMuted,
+    fontSize: theme.font.small,
+    lineHeight: 19,
+    marginTop: theme.spacing(3),
+  },
   tileGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing(3) },
   tile: {
     flexGrow: 1,
@@ -235,7 +276,12 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.border,
     padding: theme.spacing(4),
   },
-  tileValue: { color: theme.colors.text, fontSize: 30, fontWeight: '800' },
+  tileValue: {
+    color: theme.colors.text,
+    fontSize: 30,
+    fontWeight: '900',
+    fontVariant: ['tabular-nums'],
+  },
   tileLabel: {
     color: theme.colors.textMuted,
     fontSize: theme.font.tiny,
@@ -243,6 +289,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     marginTop: theme.spacing(1),
   },
+  stackCard: { marginTop: theme.spacing(3) },
   goalRow: {
     flexDirection: 'row',
     alignItems: 'flex-end',
@@ -251,8 +298,18 @@ const styles = StyleSheet.create({
   },
   goalBig: { color: theme.colors.text, fontSize: 28, fontWeight: '800' },
   goalSmall: { color: theme.colors.textMuted, fontSize: theme.font.body, fontWeight: '600' },
-  goalPct: { color: theme.colors.primary, fontSize: theme.font.h3, fontWeight: '800' },
-  goalHint: { color: theme.colors.textMuted, fontSize: theme.font.small, marginTop: theme.spacing(3) },
+  goalPct: {
+    color: theme.colors.primary,
+    fontSize: theme.font.h3,
+    fontWeight: '900',
+    fontVariant: ['tabular-nums'],
+  },
+  goalHint: {
+    color: theme.colors.textMuted,
+    fontSize: theme.font.small,
+    lineHeight: 19,
+    marginTop: theme.spacing(3),
+  },
   chart: {
     flexDirection: 'row',
     alignItems: 'flex-end',
@@ -260,7 +317,12 @@ const styles = StyleSheet.create({
     height: 150,
   },
   barCol: { flex: 1, alignItems: 'center', height: '100%', justifyContent: 'flex-end' },
-  barCount: { color: theme.colors.textMuted, fontSize: theme.font.tiny, marginBottom: 2 },
+  barCount: {
+    color: theme.colors.textMuted,
+    fontSize: theme.font.tiny,
+    marginBottom: 2,
+    fontVariant: ['tabular-nums'],
+  },
   barTrack: { height: 110, width: 14, justifyContent: 'flex-end' },
   barFill: { width: 14, borderRadius: 7, borderWidth: 1, minHeight: 4 },
   barLabel: { color: theme.colors.textFaint, fontSize: 9, marginTop: theme.spacing(1.5) },
@@ -275,7 +337,13 @@ const styles = StyleSheet.create({
     marginHorizontal: theme.spacing(2),
   },
   groupBar: { height: 10, borderRadius: 6, minWidth: 2 },
-  groupCount: { color: theme.colors.textMuted, fontSize: theme.font.small, width: 24, textAlign: 'right' },
+  groupCount: {
+    color: theme.colors.textMuted,
+    fontSize: theme.font.small,
+    width: 24,
+    textAlign: 'right',
+    fontVariant: ['tabular-nums'],
+  },
   pbRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -285,5 +353,10 @@ const styles = StyleSheet.create({
   },
   pbName: { color: theme.colors.text, fontSize: theme.font.body, fontWeight: '600' },
   pbSub: { color: theme.colors.textFaint, fontSize: theme.font.tiny, marginTop: 2 },
-  pbImp: { fontSize: theme.font.body, fontWeight: '800' },
+  pbImp: {
+    fontSize: theme.font.body,
+    fontWeight: '900',
+    marginLeft: theme.spacing(3),
+    fontVariant: ['tabular-nums'],
+  },
 });

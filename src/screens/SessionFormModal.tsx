@@ -97,7 +97,12 @@ export function SessionFormModal({
               </Pressable>
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            <ScrollView
+              contentInsetAdjustmentBehavior="automatic"
+              contentContainerStyle={styles.sheetContent}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
               <Field
                 label="Date"
                 value={draft.date}
@@ -119,7 +124,7 @@ export function SessionFormModal({
                 placeholder="e.g. Incline Bench Press"
               />
               <View style={styles.row}>
-                <View style={{ flex: 1 }}>
+                <View style={styles.rowField}>
                   <Field
                     label="Sets"
                     value={draft.sets}
@@ -128,8 +133,7 @@ export function SessionFormModal({
                     placeholder="3"
                   />
                 </View>
-                <View style={{ width: theme.spacing(3) }} />
-                <View style={{ flex: 1 }}>
+                <View style={styles.rowField}>
                   <Field
                     label="Reps / Time"
                     value={draft.repsOrTime}
@@ -197,7 +201,9 @@ const styles = StyleSheet.create({
     maxHeight: '92%',
     borderTopWidth: 1,
     borderColor: theme.colors.border,
+    borderCurve: 'continuous',
   },
+  sheetContent: { paddingBottom: theme.spacing(2) },
   handle: {
     alignSelf: 'center',
     width: 42,
@@ -214,7 +220,8 @@ const styles = StyleSheet.create({
   },
   title: { color: theme.colors.text, fontSize: theme.font.h2, fontWeight: '800' },
   close: { color: theme.colors.textMuted, fontSize: 20, fontWeight: '700' },
-  row: { flexDirection: 'row' },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing(3) },
+  rowField: { flex: 1, minWidth: 132 },
   switchRow: {
     flexDirection: 'row',
     alignItems: 'center',

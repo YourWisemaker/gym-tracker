@@ -3,7 +3,14 @@ import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStore } from '../store';
 import { theme } from '../theme';
-import { EmptyState, ProgressBar } from '../components/ui';
+import {
+  BOTTOM_BAR_SPACE,
+  EmptyState,
+  FloatingActionButton,
+  ProgressBar,
+  SCREEN_PADDING,
+  ScreenHeader,
+} from '../components/ui';
 import { PersonalBest } from '../types';
 import { pbImprovement } from '../stats';
 import { PBDraft, PBFormModal, pbToDraft } from './PBFormModal';
@@ -62,19 +69,18 @@ export function PBScreen() {
       <FlatList
         data={data.personalBests}
         keyExtractor={(item) => item.id}
+        contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{
           paddingTop: insets.top + theme.spacing(4),
-          paddingBottom: theme.spacing(28),
-          paddingHorizontal: theme.spacing(4),
+          paddingBottom: BOTTOM_BAR_SPACE,
+          paddingHorizontal: SCREEN_PADDING,
         }}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
-          <View style={styles.headerBlock}>
-            <Text style={styles.h1}>PB Tracker</Text>
-            <Text style={styles.sub}>
-              Update your PBs as you hit new records. These are your trophies.
-            </Text>
-          </View>
+          <ScreenHeader
+            title="PB Tracker"
+            subtitle="See each lift's start, current best, and target at a glance."
+          />
         }
         ListEmptyComponent={
           <EmptyState title="No PBs tracked" subtitle="Add a lift to start chasing records." />
@@ -87,7 +93,7 @@ export function PBScreen() {
             <Pressable style={styles.card} onPress={() => openEdit(item)}>
               <View style={styles.cardTop}>
                 <Text style={styles.name}>{item.exercise}</Text>
-                {reached ? <Text style={styles.trophy}>🏆</Text> : null}
+                {reached ? <Text style={styles.trophy}>MAX</Text> : null}
               </View>
               <View style={styles.statsRow}>
                 <View style={styles.stat}>
@@ -128,11 +134,11 @@ export function PBScreen() {
         }}
       />
 
-      <View style={[styles.fabWrap, { bottom: insets.bottom + theme.spacing(20) }]}>
-        <Pressable style={styles.fab} onPress={openNew}>
-          <Text style={styles.fabText}>＋</Text>
-        </Pressable>
-      </View>
+      <FloatingActionButton
+        label="Add personal best"
+        onPress={openNew}
+        bottom={insets.bottom + theme.spacing(20)}
+      />
 
       <PBFormModal
         visible={modalOpen}
@@ -147,9 +153,6 @@ export function PBScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: theme.colors.bg },
-  headerBlock: { marginBottom: theme.spacing(4) },
-  h1: { color: theme.colors.text, fontSize: theme.font.h1, fontWeight: '800' },
-  sub: { color: theme.colors.textMuted, fontSize: theme.font.small, marginTop: theme.spacing(1) },
   card: {
     backgroundColor: theme.colors.surface,
     borderRadius: theme.radius.md,
@@ -157,6 +160,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.border,
     padding: theme.spacing(4),
     marginBottom: theme.spacing(3),
+    borderCurve: 'continuous',
   },
   cardTop: {
     flexDirection: 'row',
@@ -164,39 +168,46 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: theme.spacing(3),
   },
-  name: { color: theme.colors.text, fontSize: theme.font.h3, fontWeight: '700' },
-  trophy: { fontSize: 18 },
-  statsRow: { flexDirection: 'row', marginBottom: theme.spacing(3) },
-  stat: { flex: 1, alignItems: 'flex-start' },
+  name: { color: theme.colors.text, fontSize: theme.font.h3, fontWeight: '800', flex: 1 },
+  trophy: {
+    color: theme.colors.primary,
+    fontSize: theme.font.tiny,
+    fontWeight: '900',
+    letterSpacing: 1,
+    paddingHorizontal: theme.spacing(2),
+    paddingVertical: theme.spacing(1),
+    borderRadius: theme.radius.sm,
+    backgroundColor: theme.colors.primary + '18',
+    overflow: 'hidden',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: theme.spacing(2),
+    marginBottom: theme.spacing(3),
+  },
+  stat: { flex: 1, minWidth: 86, alignItems: 'flex-start' },
   statLabel: {
     color: theme.colors.textFaint,
     fontSize: theme.font.tiny,
     fontWeight: '700',
     letterSpacing: 1,
   },
-  statValue: { color: theme.colors.text, fontSize: theme.font.h3, fontWeight: '800', marginTop: 2 },
+  statValue: {
+    color: theme.colors.text,
+    fontSize: theme.font.h3,
+    fontWeight: '900',
+    marginTop: 2,
+    fontVariant: ['tabular-nums'],
+  },
   unit: { color: theme.colors.textMuted, fontSize: theme.font.small, fontWeight: '600' },
   cardBottom: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: theme.spacing(3),
     marginTop: theme.spacing(3),
   },
-  improveText: { color: theme.colors.textMuted, fontSize: theme.font.small, fontWeight: '600' },
+  improveText: { color: theme.colors.textMuted, fontSize: theme.font.small, fontWeight: '600', flex: 1 },
   dateText: { color: theme.colors.textFaint, fontSize: theme.font.small },
-  fabWrap: { position: 'absolute', right: theme.spacing(5) },
-  fab: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
-    backgroundColor: theme.colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: theme.colors.primary,
-    shadowOpacity: 0.5,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 8,
-  },
-  fabText: { color: '#0B1F12', fontSize: 30, fontWeight: '700', marginTop: -2 },
 });

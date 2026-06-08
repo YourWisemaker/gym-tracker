@@ -93,7 +93,12 @@ export function PBFormModal({
               </Pressable>
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            <ScrollView
+              contentInsetAdjustmentBehavior="automatic"
+              contentContainerStyle={styles.sheetContent}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
               <Field
                 label="Lift / Exercise"
                 value={draft.exercise}
@@ -107,7 +112,7 @@ export function PBFormModal({
                 onChange={(v) => set('unit', v)}
               />
               <View style={styles.row}>
-                <View style={{ flex: 1 }}>
+                <View style={styles.rowField}>
                   <Field
                     label="Starting"
                     value={draft.startingWeight}
@@ -116,8 +121,7 @@ export function PBFormModal({
                     placeholder="0"
                   />
                 </View>
-                <View style={{ width: theme.spacing(3) }} />
-                <View style={{ flex: 1 }}>
+                <View style={styles.rowField}>
                   <Field
                     label="Current PB"
                     value={draft.currentPB}
@@ -128,7 +132,7 @@ export function PBFormModal({
                 </View>
               </View>
               <View style={styles.row}>
-                <View style={{ flex: 1 }}>
+                <View style={styles.rowField}>
                   <Field
                     label="Target"
                     value={draft.target}
@@ -137,8 +141,7 @@ export function PBFormModal({
                     placeholder="0"
                   />
                 </View>
-                <View style={{ width: theme.spacing(3) }} />
-                <View style={{ flex: 1 }}>
+                <View style={styles.rowField}>
                   <Field
                     label="Date Set"
                     value={draft.dateSet}
@@ -182,7 +185,9 @@ const styles = StyleSheet.create({
     maxHeight: '92%',
     borderTopWidth: 1,
     borderColor: theme.colors.border,
+    borderCurve: 'continuous',
   },
+  sheetContent: { paddingBottom: theme.spacing(2) },
   handle: {
     alignSelf: 'center',
     width: 42,
@@ -199,5 +204,6 @@ const styles = StyleSheet.create({
   },
   title: { color: theme.colors.text, fontSize: theme.font.h2, fontWeight: '800' },
   close: { color: theme.colors.textMuted, fontSize: 20, fontWeight: '700' },
-  row: { flexDirection: 'row' },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing(3) },
+  rowField: { flex: 1, minWidth: 132 },
 });

@@ -9,7 +9,14 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStore } from '../store';
 import { theme } from '../theme';
-import { EmptyState, Tag } from '../components/ui';
+import {
+  BOTTOM_BAR_SPACE,
+  EmptyState,
+  FloatingActionButton,
+  SCREEN_PADDING,
+  ScreenHeader,
+  Tag,
+} from '../components/ui';
 import { Session } from '../types';
 import { parseDateKey } from '../stats';
 import {
@@ -86,17 +93,18 @@ export function SessionLogScreen() {
       <SectionList
         sections={sections}
         keyExtractor={(item) => item.id}
+        contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{
           paddingTop: insets.top + theme.spacing(4),
-          paddingBottom: theme.spacing(28),
-          paddingHorizontal: theme.spacing(4),
+          paddingBottom: BOTTOM_BAR_SPACE,
+          paddingHorizontal: SCREEN_PADDING,
         }}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
-          <View style={styles.headerBlock}>
-            <Text style={styles.h1}>Session Log</Text>
-            <Text style={styles.sub}>Log every session. Watch the gains stack up.</Text>
-          </View>
+          <ScreenHeader
+            title="Session Log"
+            subtitle="Fast entries for every lift, run, stretch, and skipped day."
+          />
         }
         ListEmptyComponent={
           <EmptyState
@@ -144,11 +152,11 @@ export function SessionLogScreen() {
         )}
       />
 
-      <View style={[styles.fabWrap, { bottom: insets.bottom + theme.spacing(20) }]}>
-        <Pressable style={styles.fab} onPress={openNew}>
-          <Text style={styles.fabText}>＋</Text>
-        </Pressable>
-      </View>
+      <FloatingActionButton
+        label="Add session"
+        onPress={openNew}
+        bottom={insets.bottom + theme.spacing(20)}
+      />
 
       <SessionFormModal
         visible={modalOpen}
@@ -163,9 +171,6 @@ export function SessionLogScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: theme.colors.bg },
-  headerBlock: { marginBottom: theme.spacing(4) },
-  h1: { color: theme.colors.text, fontSize: theme.font.h1, fontWeight: '800' },
-  sub: { color: theme.colors.textMuted, fontSize: theme.font.small, marginTop: theme.spacing(1) },
   sectionHeader: {
     color: theme.colors.textMuted,
     fontSize: theme.font.tiny,
@@ -184,13 +189,19 @@ const styles = StyleSheet.create({
     padding: theme.spacing(3.5),
     marginBottom: theme.spacing(2.5),
     overflow: 'hidden',
+    borderCurve: 'continuous',
   },
   stripe: {
     width: 4,
     borderRadius: 2,
     marginRight: theme.spacing(3),
   },
-  rowTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  rowTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: theme.spacing(2),
+  },
   workout: { color: theme.colors.text, fontSize: theme.font.body, fontWeight: '700', flex: 1 },
   skipped: {
     color: theme.colors.danger,
@@ -198,21 +209,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginLeft: theme.spacing(2),
   },
-  meta: { color: theme.colors.textMuted, fontSize: theme.font.small, marginTop: 2 },
+  meta: { color: theme.colors.textMuted, fontSize: theme.font.small, marginTop: 2, lineHeight: 19 },
   notes: { color: theme.colors.textFaint, fontSize: theme.font.small, marginTop: 2, fontStyle: 'italic' },
-  fabWrap: { position: 'absolute', right: theme.spacing(5) },
-  fab: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
-    backgroundColor: theme.colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: theme.colors.primary,
-    shadowOpacity: 0.5,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 8,
-  },
-  fabText: { color: '#0B1F12', fontSize: 30, fontWeight: '700', marginTop: -2 },
 });
