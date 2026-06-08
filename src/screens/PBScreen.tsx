@@ -166,8 +166,8 @@ const styles = StyleSheet.create({
   },
   name: { color: theme.colors.text, fontSize: theme.font.h3, fontWeight: '700' },
   trophy: { fontSize: 18 },
-  statsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: theme.spacing(3) },
-  stat: { alignItems: 'flex-start' },
+  statsRow: { flexDirection: 'row', marginBottom: theme.spacing(3) },
+  stat: { flex: 1, alignItems: 'flex-start' },
   statLabel: {
     color: theme.colors.textFaint,
     fontSize: theme.font.tiny,

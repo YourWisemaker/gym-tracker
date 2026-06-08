@@ -9,7 +9,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useStore } from '../store';
 import { theme } from '../theme';
-import { Button, EmptyState, Tag } from '../components/ui';
+import { EmptyState, Tag } from '../components/ui';
 import { Session } from '../types';
 import { parseDateKey } from '../stats';
 import {
